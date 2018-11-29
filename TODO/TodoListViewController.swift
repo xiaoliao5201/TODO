@@ -11,7 +11,8 @@ import UIKit
 class TodoListViewController: UITableViewController {
     //创建一个数组
     var itemArray = ["你有没有","那么一瞬间","心疼过我的执着"]
-    
+    //本地数据存储
+     let defaults = UserDefaults.standard
     //创建计时器
     var timer = Timer()
   
@@ -21,7 +22,10 @@ class TodoListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        //定义计时器,5秒后执行aa方法
+        // 如果UserDefaults对象获取的数据是字符串数组，则通过可选绑定的方式赋值给items 把存到沙盒的数据赋值给数组
+        if let items = defaults.array(forKey: "ToDoListArray") as? [String]{
+            itemArray = items
+        }
         
     }
     
@@ -62,6 +66,8 @@ class TodoListViewController: UITableViewController {
      let action = UIAlertAction(title: "添加项目", style: .default) { (action) in
         //当用户单击添加项目按钮以后要执行的代码
           self.itemArray.append(textField.text!)
+        //添加到沙盒中保存本地数据
+         self.defaults.set(self.itemArray, forKey: "ToDoListArray")
         //通过表格视图的reloadData()方法让其重新载入数据来更新表格视图中所显示的数据
           self.tableView.reloadData()
         }
@@ -78,8 +84,11 @@ class TodoListViewController: UITableViewController {
         alert.addAction(action)
         present(alert, animated: true, completion: nil)
     }
+    
+   
 
    }
+
 
  
 
